@@ -6,12 +6,13 @@ import { database } from '../services/firebase';
 
 import { Button } from '../components/Button';
 import { RoomCode } from '../components/RoomCode';
+import { Question } from '../components/Question';
 
 import logoImg from '../assets/images/logo.svg';
 
 import '../styles/room.scss';
 
-type Question = {
+type QuestionType = {
   id: string;
   author: {
     name: string;
@@ -41,14 +42,14 @@ export function Room() {
   const params = useParams<RoomParams>();
   const roomId = params.id;
   const [newQuestion, setNewQuestion] = useState('');
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [title, setTitle] = useState('');
 
   useEffect(() => {
     const roomRef = database.ref(`rooms/${roomId}`);
 
     // TODO: Substituir escuta de value por child: https://firebase.google.com/docs/database/admin/retrieve-data#child-changed
-    roomRef.on('value', room => {
+    roomRef.once('value', room => {
       const databaseRoom = room.val();
       const firebaseQuestions: FirebaseQuestions = databaseRoom.questions ?? {};
 
@@ -131,7 +132,17 @@ export function Room() {
           </div>
         </form>
 
-        {JSON.stringify(questions)}
+        <div className="question-list">
+          {questions.map(question => {
+            return (
+              <Question
+                key={question.id}
+                content={question.content}
+                author={question.author}
+              />
+            );
+          })}
+        </div>
       </main>
     </div>
   );
