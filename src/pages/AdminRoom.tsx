@@ -1,4 +1,4 @@
-import { useHistory, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { useRoom } from '../hooks/useRoom';
 import { database } from '../services/firebase';
